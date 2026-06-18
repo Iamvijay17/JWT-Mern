@@ -13,10 +13,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: [true, "Password is required"],
     },
-    role:{
+    role: {
       type: String,
       enum: ["admin", "user"],
-      default: "user"
+      default: "user",
     },
     age: {
       type: Number,
@@ -28,4 +28,4 @@ const UserSchema = new mongoose.Schema(
   },
 );
 
-export default User = mongoose.Collection("User", UserSchema);
+export default mongoose.model("User", UserSchema);
