@@ -1,5 +1,7 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
+import jwt from "jsonwebtoken";
+import { SECURITY_KEY } from "../../config/env.js";
 
 export const registerUser = async (req, res) => {
   try {
@@ -23,4 +25,40 @@ export const registerUser = async (req, res) => {
   } catch (err) {}
 };
 
-const login = async (req, res) => {};
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({
+    email,
+  });
+
+  if (!user) {
+    res.status(404).json({
+      success: false,
+      message: "user not found",
+    });
+  }
+
+  const passwordCheck = await bcrypt.compare(password, user.password);
+
+  if (!passwordCheck) {
+    res.status(401).json({
+      success: false,
+      message: "invalid password",
+    });
+  }
+
+  const token = jwt.sign(
+    { email: user.email, name: user.name, role: user.role },
+    SECURITY_KEY,
+    {
+      expiresIn: "7d",
+    },
+  );
+
+  res.json({
+    success: true,
+    message: "logged in successfully",
+    token,
+  });
+};
