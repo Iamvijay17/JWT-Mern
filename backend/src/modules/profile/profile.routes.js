@@ -4,6 +4,6 @@ import verifyToken from "../../middlewares/verifyToken.js";
 
 const profileRoutes = express();
 
-profileRoutes.get("/",verifyToken, getProfile);
+profileRoutes.get("/", verifyToken, getProfile);
 
 export default profileRoutes;
