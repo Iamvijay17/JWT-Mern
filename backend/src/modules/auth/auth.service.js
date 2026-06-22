@@ -1,1 +1,1 @@
-const registerUser = async (name, email, password) => {};
+const registerUserService = async (name, email, password, age, role) => {};
