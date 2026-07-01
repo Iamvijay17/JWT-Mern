@@ -1,10 +1,15 @@
 import jwt from "jsonwebtoken";
-import { SECURITY_KEY } from "../config/env";
+import { SECURITY_KEY } from "../config/env.js";
 
-const generateToken = (user) => {
-  const token = jwt.sign(user, SECURITY_KEY, {
-    expiresIn: "7d",
+export const generateToken = (user) => {
+  const { email, name, role } = user;
+  return jwt.sign({ email: email, name: name, role: role }, SECURITY_KEY, {
+    expiresIn: "5m",
   });
 };
 
-export default generateToken;
+export const generateRefreshToken = (user) => {
+  return jwt.sign({ email: user.email }, SECURITY_KEY, {
+    expiresIn: "7d",
+  });
+};

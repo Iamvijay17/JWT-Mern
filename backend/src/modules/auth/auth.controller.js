@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import User from "../../models/User.js";
 import jwt from "jsonwebtoken";
 import { SECURITY_KEY } from "../../config/env.js";
+import { generateRefreshToken, generateToken } from "../../utils/token.js";
 
 export const registerUser = async (req, res) => {
   try {
@@ -48,13 +49,10 @@ export const login = async (req, res) => {
     });
   }
 
-  const token = jwt.sign(
-    { email: user.email, name: user.name, role: user.role },
-    SECURITY_KEY,
-    {
-      expiresIn: "7d",
-    },
-  );
+  const token = generateToken(user);
+  const refreshToken = generateRefreshToken(user);
+
+  res.cookie("refreshToken", refreshToken);
 
   res.json({
     success: true,
