@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import api from "./services/api";
 
 function App() {
   const {
@@ -10,9 +11,13 @@ function App() {
 
   const onSubmit = (data) => {
     try {
-      const response = api.post("/auth/login", data);
+      const response = api.post("/auth/login", {
+        email: data.email,
+        password: data.password,
+      });
+      console.log("response", response);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -23,7 +28,7 @@ function App() {
         className="flex flex-col gap-4 bg-white p-6 rounded-lg shadow-lg w-80"
       >
         <input
-          {...register("name", { required: true, maxLength: 20 })}
+          {...register("name")}
           placeholder="Name"
           value={"vijay"}
           className="border border-gray-400 rounded px-3 py-2 outline-none focus:border-blue-500"
@@ -35,7 +40,7 @@ function App() {
         <input
           type="number"
           value={24}
-          {...register("age", { required: true })}
+          {...register("age")}
           placeholder="Age"
           className="border border-gray-400 rounded px-3 py-2 outline-none focus:border-blue-500"
         />
