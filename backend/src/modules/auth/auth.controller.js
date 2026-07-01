@@ -52,11 +52,11 @@ export const login = async (req, res) => {
   const token = generateToken(user);
   const refreshToken = generateRefreshToken(user);
 
+  res.cookie("token", token);
   res.cookie("refreshToken", refreshToken);
 
   res.json({
     success: true,
     message: "logged in successfully",
-    token,
   });
 };
