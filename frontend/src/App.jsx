@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 function App() {
@@ -6,28 +5,64 @@ function App() {
     register,
     watch,
     handleSubmit,
-    formState: { error },
-    ...props
+    formState: { errors },
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log(data, props);
+    try {
+      const response = api.post("/auth/login", data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  console.log(watch("example"));
-
   return (
-    <>
-      <div className="flex justify-center items-center min-h-screen">
-        <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
-          <input {...register("name", { required: true, maxLength: 20 })} />
-          <input {...register("age", { required: true })} />
-          <input {...register("email")} />
-          <input {...register("password")} />
-          <input type="submit" />
-        </form>
-      </div>
-    </>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-4 bg-white p-6 rounded-lg shadow-lg w-80"
+      >
+        <input
+          {...register("name", { required: true, maxLength: 20 })}
+          placeholder="Name"
+          value={"vijay"}
+          className="border border-gray-400 rounded px-3 py-2 outline-none focus:border-blue-500"
+        />
+        {errors.name && (
+          <p className="text-red-500 text-sm">Name is required</p>
+        )}
+
+        <input
+          type="number"
+          value={24}
+          {...register("age", { required: true })}
+          placeholder="Age"
+          className="border border-gray-400 rounded px-3 py-2 outline-none focus:border-blue-500"
+        />
+        {errors.age && <p className="text-red-500 text-sm">Age is required</p>}
+
+        <input
+          type="email"
+          {...register("email")}
+          placeholder="Email"
+          className="border border-gray-400 rounded px-3 py-2 outline-none focus:border-blue-500"
+        />
+
+        <input
+          type="password"
+          {...register("password")}
+          placeholder="Password"
+          className="border border-gray-400 rounded px-3 py-2 outline-none focus:border-blue-500"
+        />
+
+        <button
+          type="submit"
+          className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
   );
 }
 
