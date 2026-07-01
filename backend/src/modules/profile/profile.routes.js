@@ -5,6 +5,6 @@ import authorizeRole from "../../middlewares/authorizeRole.js";
 
 const profileRoutes = express();
 
-profileRoutes.get("/", verifyToken, authorizeRole("user"), getProfile);
+profileRoutes.get("/", verifyToken, authorizeRole("user", "admin"), getProfile);
 
 export default profileRoutes;

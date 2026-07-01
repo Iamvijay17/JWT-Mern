@@ -4,7 +4,7 @@ import { SECURITY_KEY } from "../config/env.js";
 export const generateToken = (user) => {
   const { email, name, role } = user;
   return jwt.sign({ email: email, name: name, role: role }, SECURITY_KEY, {
-    expiresIn: "5m",
+    expiresIn: "2m",
   });
 };
 
