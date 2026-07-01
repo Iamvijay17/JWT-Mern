@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { setCookie } from "cookies-next";
 
 function Login() {
   const navigate = useNavigate();
@@ -18,7 +19,9 @@ function Login() {
         email: data.email,
         password: data.password,
       });
-      console.log("response", response);
+      if (response.data?.accessToken) {
+        setCookie("accessToken", response.data.accessToken);
+      }
       if (response.data) {
         navigate("/home");
       }

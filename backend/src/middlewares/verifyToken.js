@@ -6,7 +6,7 @@ const verifyToken = (req, res, next) => {
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    res.status(401).json({
+    return res.status(401).json({
       success: false,
       message: "token not provided",
     });
@@ -18,12 +18,12 @@ const verifyToken = (req, res, next) => {
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
-      res.status(401).json({
+      return res.status(401).json({
         success: false,
         message: "Token expired",
       });
     }
-    res.status(401).json({
+    return res.status(401).json({
       success: false,
       message: "invalid token",
     });

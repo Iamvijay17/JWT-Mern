@@ -1,4 +1,5 @@
 import axios from "axios";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 
 const api = axios.create({
   baseURL: "http://localhost:3000/api",
@@ -11,7 +12,7 @@ const api = axios.create({
 // Request Interceptor
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("accessToken");
+    const token = getCookie("accessToken");
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -39,7 +40,7 @@ api.interceptors.response.use(
         const newAccessToken = response.data.accessToken;
 
         // Save new access token
-        ("accessToken", newAccessToken);
+        setCookie("accessToken", newAccessToken);
 
         // Update failed request
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -47,9 +48,9 @@ api.interceptors.response.use(
         // Retry original request
         return api(originalRequest);
       } catch (err) {
-        localStorage.removeItem("accessToken");
+        deleteCookie("accessToken");
 
-        window.location.href = "/login";
+        window.location.href = "/";
 
         return Promise.reject(err);
       }

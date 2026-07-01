@@ -34,7 +34,7 @@ export const login = async (req, res) => {
   });
 
   if (!user) {
-    res.status(404).json({
+    return res.status(404).json({
       success: false,
       message: "user not found",
     });
@@ -43,7 +43,7 @@ export const login = async (req, res) => {
   const passwordCheck = await bcrypt.compare(password, user.password);
 
   if (!passwordCheck) {
-    res.status(401).json({
+    return res.status(401).json({
       success: false,
       message: "invalid password",
     });
@@ -58,9 +58,48 @@ export const login = async (req, res) => {
   res.json({
     success: true,
     message: "logged in successfully",
+    accessToken: token,
   });
 };
 
 export const refreshToken = async (req, res) => {
-  
+  try {
+    const { refreshToken: token } = req.cookies;
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Refresh token not provided",
+      });
+    }
+
+    const decoded = jwt.verify(token, SECURITY_KEY);
+
+    const user = await User.findOne({ email: decoded.email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const newAccessToken = generateToken(user);
+
+    res.json({
+      success: true,
+      accessToken: newAccessToken,
+    });
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({
+        success: false,
+        message: "Refresh token expired",
+      });
+    }
+    return res.status(401).json({
+      success: false,
+      message: "Invalid refresh token",
+    });
+  }
 };
